@@ -13,18 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.conf.urls import url
 from django.contrib import admin
+from photos.views import HomeView, DetailView, CreateView, PhotoListView, UserPhotosView
+from users.views import LoginView, LogoutView
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     #Photo URL's
-    url(r'^$','photos.views.home', name='photos_home'),
-    url(r'^photos/(?P<pk>[0-9]+)$','photos.views.detail', name='photos_detail'),
-    url(r'^photos/new$','photos.views.create', name='create_photo'),
+    url(r'^$',HomeView.as_view(), name='photos_home'),
+    url(r'^my-photos/$', login_required(UserPhotosView.as_view()), name='user_photos'),
+    url(r'^photos/$', PhotoListView.as_view(), name='photos_list'),
+    url(r'^photos/(?P<pk>[0-9]+)$',DetailView.as_view(), name='photos_detail'),
+    url(r'^photos/new$',CreateView.as_view(), name='create_photo'),
 
     #User URL's
-    url(r'^login$', 'users.views.login', name='users_login'),
-    url(r'^logout$', 'users.views.logout', name='users_logout')
+    url(r'^login$', LoginView.as_view(), name='users_login'),
+    url(r'^logout$', LogoutView.as_view(), name='users_logout')
 ]
