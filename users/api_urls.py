@@ -15,28 +15,16 @@ Including another URLconf
 """
 
 from django.conf.urls import url, include
-from django.contrib import admin
-from photos.api import PhotoViewSet
 from rest_framework.routers import DefaultRouter
 from users.api import UserViewSet
-from users import urls as users_urls, api_urls as users_api_urls
-from photos import urls as photos_urls, api_urls as photos_api_urls
 
 
 # APIRouters
 
 router = DefaultRouter()
-router.register(r'api/1.0/photos', PhotoViewSet)
-router.register(r'api/1.0/users', UserViewSet, base_name='user')
+router.register(r'users', UserViewSet, base_name='user')
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-
-    # User URLS
-    url(r'', include(users_urls)),
-    url(r'api/', include(users_api_urls)),
-
-    # Photos URLS
-    url(r'', include(photos_urls)),
-    url(r'api/', include(photos_api_urls)),
+    # API URL's
+    url(r'1.0/', include(router.urls)),
 ]
